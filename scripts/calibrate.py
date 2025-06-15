@@ -60,11 +60,10 @@ def main():
                 (-1, -1), 
                 (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.001)
             )
-            cv2.drawChessboardCorners(gray,pattern_size,refines_corners,ret)
+            cv2.drawChessboardCorners(frame,pattern_size,refines_corners,ret)
          
-        cv2.putText(gray, f"Find chees board, {full_corner_found}/15",(10,30), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 255), 2)
-        cv2.imshow(f"{args.order} original image",frame)
-        cv2.imshow(f"{args.order} cheesboard match", gray)
+        cv2.putText(frame, f"Find chees board, {full_corner_found}/15",(10,30), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 255), 2)
+        cv2.imshow(f"{args.order} image",frame)
         key = cv2.waitKey(1)
         if key == ord('q'):
             break
@@ -81,11 +80,24 @@ def main():
                     marker_corordinates,
                     corner_coordinates,
                     gray.shape[::-1],
-                    None,
-                    None
+                    cv2.CALIB_FIX_S1_S2_S3_S4,
+                    distCoeffs=(0,0,0,0)
                 )  
                 print("内参矩阵", mtx)
                 print("畸变系数", dist)
+                mean_error = 0
+                for i in range(len(marker_corordinates)):
+                    img_points2, _ = cv2.projectPoints(
+                        marker_corordinates[i], 
+                        rvecs[i], 
+                        tvecs[i], 
+                        mtx, 
+                        dist
+                    )
+                    error = cv2.norm(corner_coordinates[i], img_points2, cv2.NORM_L2) / len(img_points2)
+                    mean_error += error
+                
+                print(f"平均重投影误差: {mean_error/len(marker_corordinates):.5f} 像素")
             else:
                 print("No enough image to calibrate.")
          
