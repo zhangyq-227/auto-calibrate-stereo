@@ -22,8 +22,8 @@ def main():
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
     chess_board_per_size = 0.02       # m
 
-    pattern_size = (12,9)
-    obj_points = np.zeros((pattern_size[0]*pattern_size[1],3), np.float16)
+    pattern_size = (11,8)
+    obj_points = np.zeros((pattern_size[0]* pattern_size[1],3), np.float32)
     obj_points[:,:2] = np.mgrid[0:pattern_size[0],0:pattern_size[1]].T.reshape(-1,2)
     obj_points *= chess_board_per_size
     
@@ -73,7 +73,7 @@ def main():
                 print("No chess board detection.")
             else:
                 corner_coordinates.append(refines_corners)
-                marker_corordinates.append(obj_points)
+                marker_corordinates.append(obj_points.copy().reshape(-1,1,3))
                 full_corner_found += 1
         elif key == ord('x'): 
             if full_corner_found >= 15:
