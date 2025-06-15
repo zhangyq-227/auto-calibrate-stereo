@@ -62,7 +62,7 @@ def main():
             )
             cv2.drawChessboardCorners(gray,pattern_size,refines_corners,ret)
          
-        cv2.putText(gray, f"Find cheese board, {full_corner_found}/15",(10,30), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 255), 2)
+        cv2.putText(gray, f"Find chees board, {full_corner_found}/15",(10,30), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 255), 2)
         cv2.imshow(f"{args.order} original image",frame)
         cv2.imshow(f"{args.order} cheesboard match", gray)
         key = cv2.waitKey(1)
